@@ -2,7 +2,7 @@ from collections import Counter
 from copy import copy
 
 
-with open('resources/day_03.txt') as f:
+with open('input.txt') as f:
     all_lines = f.read().splitlines()
 
 oxy_lines = copy(all_lines)

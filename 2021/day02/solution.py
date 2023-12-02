@@ -1,4 +1,4 @@
-with open('resources/day_02.txt') as f:
+with open('input.txt') as f:
     lines = f.readlines()
 
 commands = [x.strip().split(' ') for x in lines]

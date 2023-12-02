@@ -1,4 +1,4 @@
-with open('resources/day_07.txt') as f:
+with open('input.txt') as f:
     line = f.readline().strip().split(',')
 
 crabs = [int(c) for c in line]

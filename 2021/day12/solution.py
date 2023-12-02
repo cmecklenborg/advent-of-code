@@ -1,6 +1,6 @@
 from collections import defaultdict, Counter
 
-with open('resources/day_12.txt') as f:
+with open('input.txt') as f:
     lines = f.read().splitlines()
 
 sections = defaultdict(set)

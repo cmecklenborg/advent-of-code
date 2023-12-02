@@ -1,4 +1,4 @@
-with open('resources/day_15.txt') as f:
+with open('input.txt') as f:
     lines = f.read().splitlines()
 
 grid = []

@@ -1,6 +1,6 @@
 import math
 
-with open('resources/day_16.txt') as f:
+with open('input.txt') as f:
     lines = f.read().splitlines()
 
 versions = 0

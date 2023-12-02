@@ -1,6 +1,6 @@
 from statistics import median
 
-with open('resources/day_10.txt') as f:
+with open('input.txt') as f:
     lines = f.read().splitlines()
 
 close_chars = {

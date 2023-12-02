@@ -1,4 +1,4 @@
-with open('resources/day_04.txt') as f:
+with open('input.txt') as f:
     bingos = f.readline().strip().split(',')
     board_lines = f.read().splitlines()
 

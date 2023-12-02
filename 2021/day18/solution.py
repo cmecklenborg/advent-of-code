@@ -1,6 +1,6 @@
 import json
 
-with open('resources/day_18.txt') as f:
+with open('input.txt') as f:
     lines = f.read().splitlines()
 
 for line in lines:

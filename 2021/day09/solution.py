@@ -1,4 +1,4 @@
-with open('resources/day_09.txt') as f:
+with open('input.txt') as f:
     lines = f.read().splitlines()
 
 heights = []

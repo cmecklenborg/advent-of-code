@@ -1,6 +1,6 @@
 from collections import Counter
 
-with open('resources/day_06.txt') as f:
+with open('input.txt') as f:
     fish = f.readline().strip().split(',')
 
 fish = Counter([int(f) for f in fish])
