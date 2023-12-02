@@ -1,4 +1,4 @@
-with open('resources/day_13.txt') as f:
+with open('input.txt') as f:
     lines = f.read().splitlines()
 
 coords = []

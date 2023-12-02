@@ -1,4 +1,4 @@
-with open('resources/day_08.txt') as f:
+with open('input.txt') as f:
     lines = f.read().splitlines()
 
 count = 0

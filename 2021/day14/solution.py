@@ -1,6 +1,6 @@
 from collections import Counter, defaultdict
 
-with open('resources/day_14.txt') as f:
+with open('input.txt') as f:
     old_poly = f.readline().strip()
     f.readline()
     lines = f.read().splitlines()

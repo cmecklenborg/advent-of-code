@@ -1,4 +1,4 @@
-with open('resources/day_01.txt') as f:
+with open('input.txt') as f:
     lines = f.readlines()
 
 depths = [int(x.strip()) for x in lines]

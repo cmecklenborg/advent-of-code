@@ -1,6 +1,6 @@
 import re
 
-with open('resources/day_05.txt') as f:
+with open('input.txt') as f:
     lines = f.read().splitlines()
 
 
