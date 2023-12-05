@@ -4,7 +4,6 @@ import re
 with open('input.txt') as input:
     lines = input.read().splitlines()
 
-parts_sum = 0
 syms = '!@#$%^&*()_+-=|:;/?'
 x_max = len(lines[0])
 y_max = len(lines)
