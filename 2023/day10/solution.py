@@ -1,4 +1,5 @@
 from collections import defaultdict
+import re
 
 
 # List of dx, dy tuples
@@ -38,44 +39,25 @@ def pipe_calcs(file) -> (int, int):
                 queue.append(next)
 
     inner = 0
-    visited = set()
     xmax = len(lines[0])
     ymax = len(lines)
-    for xidx in range(xmax):
-        for yidx in range(ymax):
+
+    # Valid walls: |, L-*?7, F-*?J
+    # Invalid walls: LJ, F7
+
+    for yidx in range(1, ymax):
+        for xidx in range(1, xmax):
             coords = (xidx, yidx)
-            if coords not in visited and coords not in loop_map:
-                queue = [coords]
-                group = set()
-                group_closed = True
-
-                while queue:
-                    node = queue.pop(0)
-                    nx, ny = node[0], node[1]
-                    visited.add(node)
-                    group.add(node)
-                    north_edge = any([(nx, y) in loop_map for y in range(0, ny)])
-                    south_edge = any([(nx, y) in loop_map for y in range(ny + 1, ymax)])
-                    west_edge = any([(x, ny) in loop_map for x in range(0, nx)])
-                    east_edge = any([(x, ny) in loop_map for x in range(nx + 1, xmax)])
-                    group_closed = group_closed and north_edge and south_edge and west_edge and east_edge
-
-                    for next in [(nx+1, ny), (nx-1, ny), (nx, ny+1), (nx, ny-1)]:
-                        if next[0] < 0 or next[0] >= xmax:
-                            continue
-                        if next[1] < 0 or next[1] >= ymax:
-                            continue
-                        if next not in visited and next not in loop_map:
-                            queue.append(next)
-
-                print(f'Group: {sorted(group)}')
-                print(f'Group of size {len(group)} is closed: {group_closed}')
-                if group_closed:
-                    inner += len(group)
+            if coords not in loop_map:
+                left_walls = re.findall(r'(\||L-*?7|F-*?J)', lines[yidx][0:xidx])
+                right_walls = re.findall(r'(\||L-*?7|F-*?J)', lines[yidx][xidx+1:xmax])
+                if left_walls and right_walls:
+                    if len(left_walls) % 2 == 1 and len(right_walls) % 2 == 1:
+                        inner += 1
 
     return max(loop_map.values()), inner
 
 
-max_dist, inner_count = pipe_calcs('sample2.txt')
+max_dist, inner_count = pipe_calcs('input.txt')
 print(f'Part 1: {max_dist}')
 print(f'Part 2: {inner_count}')
