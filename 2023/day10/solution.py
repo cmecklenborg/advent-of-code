@@ -12,7 +12,7 @@ parts = {
 }
 
 
-def part_1(file) -> int:
+def pipe_calcs(file) -> (int, int):
     with open(file) as input:
         lines = input.read().splitlines()
 
@@ -37,21 +37,25 @@ def part_1(file) -> int:
                 loop_map[next] = min(loop_map.get(left, 100000), loop_map.get(right, 100000)) + 1
                 queue.append(next)
 
-    return max(loop_map.values())
+    inner = 0
 
-# def part_2(file):
-#     with open(file) as input:
-#         lines = input.read().splitlines()
+    # Valid walls: |, L-*?7, F-*?J
+    # Invalid walls: LJ, F7
 
-#     print(lines)
+    for yidx, row in enumerate(lines):
+        parity = 0
+        for xidx, val in enumerate(row):
+            coords = (xidx, yidx)
+            if coords not in loop_map:
+                if parity % 2 == 1:
+                    inner += 1
+            else:
+                if val in ['|', 'L', 'J']:
+                    parity += 1
+
+    return max(loop_map.values()), inner
 
 
-sp1 = part_1('sample.txt')
-print(f'Sample, Part 1: {sp1}')
-assert sp1 == 8
-a1 = part_1('input.txt')
-print(f'Part 1: {a1}')
-
-# sp2 = part_2('sample.txt')
-# print(f'Sample, Part 2: {sp2}')
-# assert sp2 == 0
+max_dist, inner_count = pipe_calcs('input.txt')
+print(f'Part 1: {max_dist}')
+print(f'Part 2: {inner_count}')
