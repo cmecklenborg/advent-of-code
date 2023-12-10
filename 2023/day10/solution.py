@@ -1,5 +1,4 @@
 from collections import defaultdict
-import re
 
 
 # List of dx, dy tuples
@@ -39,21 +38,20 @@ def pipe_calcs(file) -> (int, int):
                 queue.append(next)
 
     inner = 0
-    xmax = len(lines[0])
-    ymax = len(lines)
 
     # Valid walls: |, L-*?7, F-*?J
     # Invalid walls: LJ, F7
 
-    for yidx in range(1, ymax):
-        for xidx in range(1, xmax):
+    for yidx, row in enumerate(lines):
+        parity = 0
+        for xidx, val in enumerate(row):
             coords = (xidx, yidx)
             if coords not in loop_map:
-                left_walls = re.findall(r'(\||L-*?7|F-*?J)', lines[yidx][0:xidx])
-                right_walls = re.findall(r'(\||L-*?7|F-*?J)', lines[yidx][xidx+1:xmax])
-                if left_walls and right_walls:
-                    if len(left_walls) % 2 == 1 and len(right_walls) % 2 == 1:
-                        inner += 1
+                if parity % 2 == 1:
+                    inner += 1
+            else:
+                if val in ['|', 'L', 'J']:
+                    parity += 1
 
     return max(loop_map.values()), inner
 
