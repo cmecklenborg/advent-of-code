@@ -12,7 +12,7 @@ parts = {
 }
 
 
-def part_1(file) -> int:
+def pipe_calcs(file) -> (int, int):
     with open(file) as input:
         lines = input.read().splitlines()
 
@@ -37,21 +37,45 @@ def part_1(file) -> int:
                 loop_map[next] = min(loop_map.get(left, 100000), loop_map.get(right, 100000)) + 1
                 queue.append(next)
 
-    return max(loop_map.values())
+    inner = 0
+    visited = set()
+    xmax = len(lines[0])
+    ymax = len(lines)
+    for xidx in range(xmax):
+        for yidx in range(ymax):
+            coords = (xidx, yidx)
+            if coords not in visited and coords not in loop_map:
+                queue = [coords]
+                group = set()
+                group_closed = True
 
-# def part_2(file):
-#     with open(file) as input:
-#         lines = input.read().splitlines()
+                while queue:
+                    node = queue.pop(0)
+                    nx, ny = node[0], node[1]
+                    visited.add(node)
+                    group.add(node)
+                    north_edge = any([(nx, y) in loop_map for y in range(0, ny)])
+                    south_edge = any([(nx, y) in loop_map for y in range(ny + 1, ymax)])
+                    west_edge = any([(x, ny) in loop_map for x in range(0, nx)])
+                    east_edge = any([(x, ny) in loop_map for x in range(nx + 1, xmax)])
+                    group_closed = group_closed and north_edge and south_edge and west_edge and east_edge
 
-#     print(lines)
+                    for next in [(nx+1, ny), (nx-1, ny), (nx, ny+1), (nx, ny-1)]:
+                        if next[0] < 0 or next[0] >= xmax:
+                            continue
+                        if next[1] < 0 or next[1] >= ymax:
+                            continue
+                        if next not in visited and next not in loop_map:
+                            queue.append(next)
+
+                print(f'Group: {sorted(group)}')
+                print(f'Group of size {len(group)} is closed: {group_closed}')
+                if group_closed:
+                    inner += len(group)
+
+    return max(loop_map.values()), inner
 
 
-sp1 = part_1('sample.txt')
-print(f'Sample, Part 1: {sp1}')
-assert sp1 == 8
-a1 = part_1('input.txt')
-print(f'Part 1: {a1}')
-
-# sp2 = part_2('sample.txt')
-# print(f'Sample, Part 2: {sp2}')
-# assert sp2 == 0
+max_dist, inner_count = pipe_calcs('sample2.txt')
+print(f'Part 1: {max_dist}')
+print(f'Part 2: {inner_count}')
