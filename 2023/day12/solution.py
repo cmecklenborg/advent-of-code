@@ -1,30 +1,39 @@
 import re
+from itertools import product
 
-file = 'sample.txt'
+file = 'input.txt'
 with open(file) as input:
     lines = input.read().splitlines()
 
-
-def find_matches(springs, groups):
-    matches = []
-    if not groups:
-        return 1 if not springs else 0
-    group = groups.pop(0)
-    max_idx = sum(groups) + len(groups)
-    for idx in range(0, len(springs) - max_idx):
-        this_spring = springs[idx:idx+group]
-        next_spring = springs[idx+group:]
-        if all([c in '#?' for c in this_spring]):
-            print(f'Found match {this_spring} for group size {group}')
-            find_matches(next_spring, groups)
-
-    return sum(matches)
-
+num_arrangements = 0
 
 for line in lines:
-    num_arrangements = 0
-    groups = [int(x) for x in re.findall(r'\d+', line)]
-    springs = line.split(' ')[0]
+    springs, buckets = line.split(' ')
+    groups = [int(g) for g in re.findall(r'\d+', buckets)]
 
-    print(f'Springs: {springs} with groups {groups}')
-    print(find_matches(springs, groups))
+    op = '[.?]'
+    br = '[#?]'
+
+    lazy = f'^{op}*?' + f'{op}+?'.join([f'({br}{{{g}}})' for g in groups]) + f'{op}*?$'
+    greedy = f'^{op}*' + f'{op}+'.join([f'({br}{{{g}}})' for g in groups]) + f'{op}*$'
+
+    # print(f'Line {springs}')
+    # print(f'Lazy regex {lazy}')
+    # print(f'Greedy regex {greedy}')
+
+    lazy_matches = re.search(fr'{lazy}', springs)
+    greedy_matches = re.search(greedy, springs)
+    lazy_starts = [lazy_matches.start(x) for x in range(1, len(lazy_matches.groups()) + 1)]
+    greedy_starts = [greedy_matches.start(x) for x in range(1, len(greedy_matches.groups()) + 1)]
+
+    arrangements = product(*[list(range(lazy_starts[x], greedy_starts[x] + 1)) for x in range(0, len(lazy_starts))])
+
+    for arr in arrangements:
+        valid_overlaps = all([arr[idx] > arr[idx-1] + groups[idx-1] for idx in range(1, len(arr))])
+        bucket_chars = ''.join([springs[arr[idx]:arr[idx]+groups[idx]] for idx in range(0, len(arr))])
+        between_chars = ''.join([springs[arr[idx-1] + groups[idx-1]:arr[idx]] for idx in range(1, len(arr))])
+
+        if valid_overlaps and not '.' in bucket_chars and not '#' in between_chars:
+            num_arrangements += 1
+
+print(num_arrangements)
