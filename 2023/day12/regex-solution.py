@@ -2,7 +2,7 @@ import re
 from itertools import product
 import time
 
-file = 'input.txt'
+file = 'sample2.txt'
 with open(file) as input:
     lines = input.read().splitlines()
 
