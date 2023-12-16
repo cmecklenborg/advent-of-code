@@ -6,7 +6,7 @@ with open(file) as input:
 
 values = []
 steps = line.split(',')
-boxes = defaultdict(list)
+boxes = defaultdict(dict)
 
 
 def hash(input: str) -> int:
@@ -34,26 +34,16 @@ def part_2(steps):
             op = '-'
             label, num = step.split('-')
 
-        box = hash(label)
-        lens = (label, num)
+        box = boxes[hash(label)]
         if op == '-':
-            for idx, bl in enumerate(boxes[box]):
-                if bl[0] == label:
-                    boxes[box].pop(idx)
-                    break
+            if label in box:
+                del box[label]
         else:
-            added = False
-            for idx, bl in enumerate(boxes[box]):
-                if bl[0] == label:
-                    boxes[box][idx] = lens
-                    added = True
-                    break
-            if not added:
-                boxes[box].append(lens)
+            box[label] = num
 
     power = 0
     for box, lenses in boxes.items():
-        power += sum([(box + 1) * (idx+1) * int(lens[1]) for idx, lens in enumerate(lenses)])
+        power += sum([(box + 1) * (slot + 1) * int(lens) for slot, lens in enumerate(lenses.values())])
 
     print(f'Focal power: {power}')
 
