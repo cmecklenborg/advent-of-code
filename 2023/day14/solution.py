@@ -1,31 +1,26 @@
 file = 'input.txt'
 with open(file) as input:
-    lines = input.read().splitlines()
+    rock_map = input.read().splitlines()
 
-round_rocks = []
-cube_rocks = []
 
-for y, line in enumerate(lines):
-    for x, c in enumerate(line):
-        coords = (x, y)
-        if c == '#':
-            cube_rocks.append(coords)
-        elif c == 'O':
-            round_rocks.append(coords)
+def roll_rocks(rock_map: list[str]) -> list[str]:
+    for y, row in enumerate(rock_map):
+        for x, c in enumerate(row):
+            if c == 'O':
+                obstacles = [y for y in range(y) if rock_map[y][x] in '#O']
+                new_y = max(obstacles, default=-1) + 1
+                if new_y != y:
+                    rock_map[y] = f'{rock_map[y][:x]}.{rock_map[y][x+1:]}'
+                    rock_map[new_y] = f'{rock_map[new_y][:x]}O{rock_map[new_y][x+1:]}'
 
-load = 0
-max_x = len(lines[0])
-max_y = len(lines)
-for col in range(0, max_x):
-    round_rows = [r[1] for r in round_rocks if r[0] == col]
-    cube_rows = [c[1] for c in cube_rocks if c[0] == col]
-    cube_rows.insert(0, -1)
+    return rock_map
 
-    for ridx in range(1, len(cube_rows)):
-        round_count = sum([1 for rr in round_rows if rr > cube_rows[ridx-1] and rr < cube_rows[ridx]])
-        round_rows = round_rows[round_count:]
-        load += sum([max_y - 1 - x - cube_rows[ridx-1] for x in range(0, round_count)])
 
-    load += sum([max_y - 1 - x - cube_rows[-1] for x in range(0, len(round_rows))])
-    
-print(load)
+def load(rock_map: list[str]) -> int:
+    max_y = len(rock_map)
+    load = sum(row.count('O') * (max_y - y) for y, row in enumerate(rock_map))
+    return load
+
+
+roll_rocks(rock_map)
+print(load(rock_map))
